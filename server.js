@@ -1,19 +1,50 @@
-const os = require('os')
-//! this is a core module 
-//? it is used so that instead of using hardcoding a path as there can be some problems with different operating systems with the '/' this problem is eliminated when using path
-const path = require('path')
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
+const corsOptions = require('./config/corsOptions');
+const { logger } = require('./middleware/logEvents');
+const errorHandler = require('./middleware/errorHandler');
+const dotenv = require('dotenv').config()
 
-console.log(os.type())
-//! to get the dictatory name
-console.log(__dirname)
-//! to get the file name
-console.log(__filename)
-//! by this we get exactly the same thing as using the above
-console.log(path.dirname(__filename))
-//! basename allow us to just pull the file name out inserted of having every thing included`
-console.log(path.basename(__filename)) //? server.js
-//! extname just give us the extension of the file
-console.log(path.extname(__filename)) //? .js
-//! to get each individual value into an object we use parse
-console.log(path.parse(__filename)) //? {root,dir,base,ext,name}
-//! to use path: path.join(__dirname,"folder","the file")
+const app = express();
+const PORT = process.env.PORT || 3500;
+
+//? custom middleware logger
+app.use(logger);
+
+// Cross Origin Resource Sharing
+app.use(cors(corsOptions));
+
+//? built-in middleware to handle urlencoded form data
+//? this middleware is for handling url encoded data such as form data
+app.use(express.urlencoded({ extended: false }));
+
+//? built-in middleware for json 
+app.use(express.json());
+
+//? serve static files
+//? this is important to make files available to the public to us css and img
+app.use('/', express.static(path.join(__dirname, '/public')));
+
+//? routes
+app.use('/', require('./routes/root'));
+
+app.use('/employees', require('./routes/api/employees'));
+
+app.all('*', (req, res) => {
+    res.status(404);
+    if (req.accepts('html')) {
+        res.sendFile(path.join(__dirname, 'views', '404.html'));
+    } else if (req.accepts('json')) {
+        res.json({ "error": "404 Not Found" });
+    } else {
+        res.type('txt').send("404 Not Found");
+    }
+});
+
+app.use(errorHandler);
+
+//! app.use vs app.all: app.use() doesn't accept regex and will be likely used by middleware.. app.all() is used for routing as it is applied to all http methods and it accepts regex
+
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
