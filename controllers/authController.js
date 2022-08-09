@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const fsPromises = require('fs').promises;
 const path = require('path');
+const roles = require('../config/rolesList');
 
 const usersDB = {
     users: require('../model/users.json'),
@@ -14,9 +15,20 @@ const handleLogin = async (req, res) => {
     if (!foundUser) return res.status(401).json("user Not found")
     samePwd = await bcrypt.compare(pwd, foundUser.password)
     if (!samePwd) return res.status(404).json("wrong password")
-    const accessToken = jwt.sign({"username":foundUser.username},process.env.ACCESS_TOKEN_SECRET,{
-     expiresIn:'30s',
-    })
+    
+    //! we are just sending the code not the admin or user to hide what each code is
+    const roles = Object.values(foundUser.roles) //? array of codes
+    
+    const accessToken = jwt.sign(
+        {
+            "UserInfo": {
+                "username": foundUser.username,
+                "roles": roles
+            }
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: '30s' }
+    );
     //! we will save our refresh token in the database which will allow us to crate a logout route which will allow us to invalidate the refresh token when the user logs out 
     const refreshToken = jwt.sign({"username":foundUser.username},process.env.REFRESH_TOKEN_SECRET,{
      expiresIn:'1d',
