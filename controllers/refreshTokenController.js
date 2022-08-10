@@ -1,17 +1,14 @@
-const usersDB = {
-    users: require('../model/users.json'),
-    setUsers: function (data) { this.users = data }
-}
+const User = require('../model/User');
 const jwt = require('jsonwebtoken');
 
-const handleRefreshToken = (req, res) => {
+const handleRefreshToken = async (req, res) => {
     const cookies = req.cookies;
 
     if (!cookies?.jwt) return res.sendStatus(401);
     //! here we will be receiving the refresh token
     const refreshToken = cookies.jwt;
     //! search for the user by the refresh token
-    const foundUser = usersDB.users.find(person => person.refreshToken === refreshToken);
+    const foundUser = await User.findOne({ refreshToken }).exec();
     if (!foundUser) return res.sendStatus(403); //Forbidden 
     //! lw el user mawgood w el token sa7 we will generate a new accessToken
     jwt.verify(
@@ -28,7 +25,7 @@ const handleRefreshToken = (req, res) => {
                     }
                 },
                 process.env.ACCESS_TOKEN_SECRET,
-                { expiresIn: '30s' }
+                { expiresIn: '60s' }
             );
             res.json({ accessToken })
         }

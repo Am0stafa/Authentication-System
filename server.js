@@ -8,13 +8,21 @@ const dotenv = require('dotenv').config()
 const cookieParser = require('cookie-parser')
 const {verifyJWT} = require('./middleware/verifyJWT');
 const credentials = require('./middleware/credentials')
-
+const connectDB = require('./config/dbConnect')
+const mongoose = require('mongoose');
 const app = express();
 const PORT = process.env.PORT || 3500;
+
+
+//! connect to db
+connectDB()
+
 
 //? custom middleware logger
 app.use(logger);
 app.use(cookieParser());
+
+
 
 // Handle options credentials check - before CORS!
 // and fetch cookies credentials requirement
@@ -41,6 +49,8 @@ app.use('/logout', require('./routes/logout'));
 app.use('/refresh', require('./routes/refresh'))//! the refresh end point will receive the cookie that has the refresh token and that will issue a new access token once it is expires
 app.use(verifyJWT)
 app.use('/employees', require('./routes/api/employees'));
+app.use('/users', require('./routes/api/users'));
+
 
 app.all('*', (req, res) => {
     res.status(404);
@@ -57,5 +67,10 @@ app.use(errorHandler);
 
 //! app.use vs app.all: app.use() doesn't accept regex and will be likely used by middleware.. app.all() is used for routing as it is applied to all http methods and it accepts regex
 
+//! we want to only listen to events only of we had successful connected
+mongoose.connection.on('open',() => {
+    console.log("db connected")
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+})
