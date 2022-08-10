@@ -10,8 +10,13 @@ const handleLogin = async (req, res) => {
     if (!foundUser) return res.sendStatus(401); //Unauthorized 
     // evaluate password 
     const match = await bcrypt.compare(pwd, foundUser.password);
-    if (match) {
+    if (match) {                                //! way to quickly remove all empty items from an array
         const roles = Object.values(foundUser.roles).filter(Boolean);
+        //! example
+        // const array = [{ good }, null, { great }, undefined]
+        // const truthyArray = array.filter(Boolean)
+        // truthyArray = [{ good }, { great }]
+        
         // create JWT
         const accessToken = jwt.sign(
             {

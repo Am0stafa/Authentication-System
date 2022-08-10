@@ -47,7 +47,6 @@ app.use('/register', require('./routes/register'));
 app.use('/auth', require('./routes/auth'));
 app.use('/logout', require('./routes/logout'));
 app.use('/refresh', require('./routes/refresh'))//! the refresh end point will receive the cookie that has the refresh token and that will issue a new access token once it is expires
-app.use(verifyJWT)
 app.use('/employees', require('./routes/api/employees'));
 app.use('/users', require('./routes/api/users'));
 

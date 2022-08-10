@@ -2,8 +2,10 @@ const express = require('express');
 const roles = require('../../config/rolesList');
 const router = express.Router();
 const employeesController = require('../../controllers/employeesController');
-    //! this will run after the verify token which run on the server.js
-const verifyRoles = require('../../middleware/verifyRoles');
+const { verifyJWT } = require('../../middleware/verifyJWT');
+
+
+router.use(verifyJWT)
 
 router.route('/')
     .get(employeesController.getAllEmployees)
