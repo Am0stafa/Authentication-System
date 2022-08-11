@@ -10,9 +10,7 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    refreshToken:{
-        type: String
-    },
+    refreshToken:[String],
     roles:{
         User: {
             type:Number,
