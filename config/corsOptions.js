@@ -8,7 +8,7 @@ const whitelist = [
 const corsOptions = {
     origin: (origin, callback) => {
             //! in deployment we must remove !origin !! in deployment (whitelist.indexOf(origin) !== -1 || !origin) 
-        if (whitelist.indexOf(origin) !== -1) {
+        if (whitelist.indexOf(origin) !== -1 || !origin)  {
             callback(null, true)
         } else {
             callback(new Error('Not allowed by CORS'));
