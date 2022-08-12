@@ -16,9 +16,10 @@ const handleRefreshToken = async (req, res) => {
     //! search for the user by the refresh token findOne will search through the refreshToken array
     const foundUser = await User.findOne({ refreshToken }).exec();
     
-    //? detected refresh token reuse!
+    //? detected refresh token reuse! two different sources trying to use the same token
+    //! stolen cookie that has been used before
     if (!foundUser){
-        //! what we want to do here is we want to decode the token that we received and see if we can pull out a username so we can match that to an account and delete all of the refresh tokens that exist with that account
+        //! what we want to do here is we want to decode the token that we received and see if we can pull out a username so we can match that to an account and delete all of the refresh tokens that exist with that account as this is an indecision that this users cookies had been compromised
         jwt.verify(
             refreshToken,
             process.env.REFRESH_TOKEN_SECRET,
@@ -30,6 +31,8 @@ const handleRefreshToken = async (req, res) => {
             maliciousUser.refreshToken = []; //! this will make the user need to relogin
             await maliciousUser.save();
         })
+        return res.sendStatus(403); //Forbidden
+
     }
     
     //! Now we have found the token it is a valid and we are ready to resend a new one after removing this old token from the database
@@ -41,7 +44,7 @@ const handleRefreshToken = async (req, res) => {
         refreshToken,
         process.env.REFRESH_TOKEN_SECRET,
         async (err, decoded) => {
-            //! we have received the token but at the same time the token has expired we found the user it is related to all that is good but we have an expired token that is being replaced
+            //! we have received the token but at the same time the token has expired we found the user it is related to all that is good but we have an expired token in the database
             if (err) {
                 //^ in that case we need to update the data in the database
                 console.log('expired refresh token')

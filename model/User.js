@@ -10,7 +10,7 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    refreshToken:[String],
+    refreshToken:[String],//! it is an array for multi device support
     roles:{
         User: {
             type:Number,
