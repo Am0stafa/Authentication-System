@@ -228,3 +228,7 @@
 20220810	03:38:16	85bf5160-1208-44e1-9201-8af8b35aa996	GET	undefined	/employees
 20220810	03:38:37	7b50c962-0406-4d3a-b8cf-67ef6424845d	POST	undefined	/auth
 20220810	03:38:44	9d66b7e3-e754-4068-8f8a-19487f00ce84	GET	undefined	/employees
+20220816	04:19:06	aaa38fc7-7756-4c25-811f-1d03e4df5026	OPTIONS	http://localhost:3000	/register
+20220816	04:19:06	89eb4794-fadc-4b5e-a38f-9dbca4e92802	POST	http://localhost:3000	/register
+20220816	04:19:07	5e62605c-ce57-465c-b426-2887c9d3ac3a	POST	http://localhost:3000	/register
+20220816	04:19:08	57c6c880-0ffd-4608-bee3-26926e1129d9	POST	http://localhost:3000	/register
