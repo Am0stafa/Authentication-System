@@ -1,10 +1,15 @@
 import { useRef, useState, useEffect, useContext } from 'react';
-import axios from './api'
-import AuthContext from "./context/AuthContext";
+import axios from '../api'
+import AuthContext from "../context/AuthContext";
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const Login = () => {
 
     const { setAuth } = useContext(AuthContext);
+    const navigate = useNavigate();
+    const location = useLocation();
+    
+    const from = location.state?.from?.pathname ?? "/";
 
     const userRef = useRef();
     const errRef = useRef();
@@ -42,7 +47,12 @@ const Login = () => {
             
             setUser('');
             setPwd('');
-            setSuccess(true);
+            
+            //! badal el success 3ayezeen nroo7 ele page el kan 3aleha aw home
+            setSuccess(true)
+            
+            navigate(from , {replace:true})
+            
             
         } catch (err) {
             if (!err?.response) {
@@ -61,17 +71,7 @@ const Login = () => {
     
     
   return (
-  
-    <>
-    {success ? (
-        <section>
-            <h1>You are logged in!</h1>
-            <br />
-            <p>
-                <a href="#">Go to Home</a>
-            </p>
-        </section>
-    ) : (
+
   
     <section>
         <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
@@ -94,6 +94,7 @@ const Login = () => {
                 id="password"
                 onChange={(e) => setPwd(e.target.value)}
                 value={pwd}
+                autoComplete="on"
                 required
              />
         
@@ -104,14 +105,11 @@ const Login = () => {
         <p>
             Need an Account?<br />
             <span className="line">
-                {/*put router link here*/}
-                <a href="#">Sign Up</a>
+                <Link to="/register">Sign Up</Link>
             </span>
         </p>    
-        </section>
-            )}
-        </>
-    )
+    </section>
+  )
 }
 
 export default Login
