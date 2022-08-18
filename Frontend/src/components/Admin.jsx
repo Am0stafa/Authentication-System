@@ -6,7 +6,7 @@ const Admin = () => {
         <section>
             <h1>Admins Page</h1>
             <br />
-            <Users/>
+                <Users/>
             <br />
             <br />
             <div className="flexGrow">
