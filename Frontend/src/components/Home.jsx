@@ -6,6 +6,7 @@ const Home = () => {
     const { setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
 
+    //TODO: handel logout
     const logout = async () => {
         //! axios to /logout endpoint 
         setAuth({});

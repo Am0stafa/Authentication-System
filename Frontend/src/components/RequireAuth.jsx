@@ -4,6 +4,7 @@ import { useLocation, Navigate, Outlet } from "react-router-dom";
 
 const RequireAuth = ({allowedRoles}) => {
     const { auth } = useContext(AuthContext);
+
     const location = useLocation();
     
 //^ The user can be in three states: 1) logged in and authorized 2) login and  not authorized 3) not logged in
@@ -17,13 +18,13 @@ const RequireAuth = ({allowedRoles}) => {
 
   const pass = () =>{
     if (auth?.roles?.find(role => allowedRoles?.includes(role))){
-      return <Outlet/>
+      return( <Outlet/>)
     }
     else if(auth?.user){
-      return <Navigate to="/unauthorized" state={{ from: location }} replace />
+      return( <Navigate to="/unauthorized" state={{ from: location }} replace />)
     }
     else{
-      return <Navigate to="/login" state={{ from: location }} replace />
+      return( <Navigate to="/login" state={{ from: location }} replace />)
     }
   }
 
