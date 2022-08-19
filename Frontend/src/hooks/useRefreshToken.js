@@ -1,33 +1,29 @@
-import  { useContext } from 'react'
-import AuthContext from "../context/AuthContext";
-import axios from '../api';
+import axios from '../api/axios';
+import useAuth from './useAuth';
 
 const useRefreshToken = () => {
-    const { setAuth } = useContext(AuthContext);
+    const { setAuth } = useAuth();
     
     //* we will call this function when our initial request fails when our access token is expired then we will refresh and get a new token and rotate the refresh token after that retry the request
     
-    const refreshToken = async () => {
-      try {
-        const res = await axios.get('/refresh',{
+    const refresh = async () => {
+        const response = await axios.get('/refresh', {
             withCredentials: true
-        })
-        setAuth(prev =>{
-            //! we want to overwrite the access token with the new access token
-            return {...prev, accessToken: res.data.accessToken}
-        })
-        
-        //^ finally we want our function to return the new access token so we can use it with our request
-        return res.data.accessToken
-        
-      } catch (err) {
-        console.log(err);
-        return err
-      }
+        });
+        setAuth(prev => {
+            console.log(JSON.stringify(prev));
+            console.log(response.data.accessToken);
+            return {
+                ...prev,
+                roles: response.data.roles,
+                //! we want to overwrite the access token with the new access token                
+                accessToken: response.data.accessToken
+            }
+        });
+        //^ finally we want our function to return the new access token so we can use it with our request        
+        return response.data.accessToken;
     }
-      
-    return refreshToken;
-  
-}
+    return refresh;
+};
 
-export default useRefreshToken
+export default useRefreshToken;
