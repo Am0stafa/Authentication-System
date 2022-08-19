@@ -91,6 +91,7 @@ const Login = () => {
                     id="password"
                     onChange={(e) => setPwd(e.target.value)}
                     value={pwd}
+                    autoComplete="on"
                     required
                 />
                 <button>Sign In</button>
@@ -101,7 +102,7 @@ const Login = () => {
                         onChange={togglePersist}
                         checked={persist}
                     />
-                    <label htmlFor="persist">Trust This Device</label>
+                    <label htmlFor="persist">Trust This Device (which disabled persist login)</label>
                 </div>
             </form>
             <p>
