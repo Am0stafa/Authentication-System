@@ -8,7 +8,6 @@ const Login = () => {
     const { setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
-    
     const from = location.state?.from?.pathname ?? "/";
 
     const userRef = useRef();
@@ -44,7 +43,6 @@ const Login = () => {
             const roles = response.data?.roles;
             const accessToken = response.data?.accessToken
             setAuth({user , roles , accessToken})
-            
             setUser('');
             setPwd('');
             

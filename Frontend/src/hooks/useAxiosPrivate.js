@@ -1,19 +1,19 @@
 import { useContext, useEffect } from "react";
 import useRefreshToken from "./useRefreshToken";
 import { axiosPrivate } from "../api";
-import AuthContext from "../context/AuthContext";
+import useAuth from "./useAuth";
 
 //! what this hook will do is attach refreshToken in the header and refresh if expired
 //& by attaching the interceptors
 const useAxiosPrivate = () => {
-    const { auth } = useContext(AuthContext);
+    const { auth } = useAuth();
     const refresh = useRefreshToken();
 
     useEffect(() => {
         
         //& we get access to the request before it send to the api so we are going to check if it has the token or not 
         //! we must return the request
-        const requestInterceptor = axiosPrivate.interceptors.request.use(
+        const requestIntercept = axiosPrivate.interceptors.request.use(
         (req)=>{
             if (!req.headers['Authorization']) {
                 req.headers['Authorization'] =  `Bearer ${auth.accessToken}`
@@ -29,7 +29,7 @@ const useAxiosPrivate = () => {
         
         //& if the response is okay we just return the response, but otherwise we will have an error handler
         //* this is when our token expires
-        const responseInterceptor = axiosPrivate.interceptors.response.use(response => response,
+        const responseIntercept = axiosPrivate.interceptors.response.use(
         async (error) => {
             //? 1)get the previous request
             //? 2) check if the status is 403
@@ -40,6 +40,7 @@ const useAxiosPrivate = () => {
             const previousRequest = error?.config;
             if(error?.response?.status === 403 && !previousRequest.send){
                 previousRequest.send = true
+                console.log("run refresh")
                 const newToken = await refresh()
                 prevRequest.headers['Authorization'] = `Bearer ${newToken}`;
                 return axiosPrivate(prevRequest);
@@ -52,8 +53,8 @@ const useAxiosPrivate = () => {
 
         //! we want to remove them as because if not we could attach more and more 
         return () => {
-            axiosPrivate.interceptors.request.eject(requestInterceptor);
-            axiosPrivate.interceptors.response.eject(responseInterceptor);
+            axiosPrivate.interceptors.request.eject(requestIntercept);
+            axiosPrivate.interceptors.response.eject(responseIntercept);
 
         };
         

@@ -14,25 +14,26 @@ const Users = () => {
       const controller = new AbortController(); 
       //! this is used to cancel the request and we will do that if the component unmounts so that we can cancel any pending request that is out there if the component unmounts this will be passed as a signal option
     
-        const getUser = async () => {
-            try {
-                const res = await axiosPrivate.get('/users');
-                
-                isMounted && setUsers(res.data);
-            } catch (err) {
-                console.log(err)
-                navigate('/login', { state: { from: location }, replace: true });
-            }
-        
+      const getUsers = async () => {
+        try {
+            const response = await axiosPrivate.get('/users', {
+
+            });
+            console.log(response.data);
+            isMounted && setUsers(response.data);
+        } catch (err) {
+            console.error(err);
+            navigate('/login', { state: { from: location }, replace: true });
         }
-        getUser()
-        
+       }
+
+        getUsers();
+    
         return () => {
-            isMounted = false; //! so we are not going to attempt the state 
-            controller.abort(); //! cancel any pending request
+            isMounted = false;
+            controller.abort();
         }
-        
-    }, [])
+}, [])
     
 
     return (
