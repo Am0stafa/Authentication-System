@@ -13,30 +13,23 @@ const RequireAuth = ({ allowedRoles }) => {
 
 //* check to see if there is a user which will indicate to us wether the user is logged in or not
 //* outlet represent any child components of required auth so only if w have a user it will show the child components
+    
+    const pass = () =>{
+        if (auth?.roles?.find(role => allowedRoles?.includes(role))){
+          return( <Outlet/>)
+        }
+        else if(auth?.user){
+          return( <Navigate to="/unauthorized" state={{ from: location }} replace />)
+        }
+        else{
+          return( <Navigate to="/login" state={{ from: location }} replace />)
+        }
+      }
 
-    return (
-        auth?.roles?.find(role => allowedRoles?.includes(role))
-            ? <Outlet />
-            : auth?.accessToken //changed from user to accessToken to persist login after refresh
-                ? <Navigate to="/unauthorized" state={{ from: location }} replace />
-                : <Navigate to="/login" state={{ from: location }} replace />
-    );
+      return (
+        pass()
+      )
 }
 
 export default RequireAuth;
 
-// const pass = () =>{
-//     if (auth?.roles?.find(role => allowedRoles?.includes(role))){
-//       return( <Outlet/>)
-//     }
-//     else if(auth?.user){
-//       return( <Navigate to="/unauthorized" state={{ from: location }} replace />)
-//     }
-//     else{
-//       return( <Navigate to="/login" state={{ from: location }} replace />)
-//     }
-//   }
-
-//   return (
-//     pass()
-//   )
