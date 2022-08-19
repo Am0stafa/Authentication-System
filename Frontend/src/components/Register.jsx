@@ -1,7 +1,8 @@
-import React,{useRef,useState,useEffect} from 'react'
+import { useRef, useState, useEffect } from "react";
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from '../api';
+import axios from '../api/axios';
+import { Link } from "react-router-dom";
 
 //! user regex to validate the username
 //^ must start wih a lower or upper case letter after that this must be followed by from 3 to 23 charterers, digits hyphens or underscores
@@ -137,7 +138,6 @@ const Register = () => {
                 value={user}
                 onFocus={() => setUserFocus(true)}
                 onBlur={() => setUserFocus(false)}
-                aria-describedby="uidnote"
                 autoComplete="off"
                 required
                 />
@@ -183,7 +183,6 @@ const Register = () => {
                 value={matchPwd}
                 required
                 aria-invalid={validMatch ? "false" : "true"}
-                aria-describedby="confirmnote"
                 onFocus={() => setMatchFocus(true)}
                 onBlur={() => setMatchFocus(false)}
             />
@@ -199,7 +198,7 @@ const Register = () => {
             Already registered?<br />
             <span className="line">
                 {/*put router link here*/}
-                <a href="#">Sign In</a>
+                <Link href="/login">Sign In</Link>
             </span>
         </p>
     </section> )}

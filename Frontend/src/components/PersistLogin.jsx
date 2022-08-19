@@ -1,20 +1,18 @@
-//! we will wraps this component around all the protected routes
 import { Outlet } from "react-router-dom";
-import { useState, useEffect,useContext } from "react";
+import { useState, useEffect } from "react";
 import useRefreshToken from '../hooks/useRefreshToken';
-import AuthContext from "../context/AuthContext";
+import useAuth from '../hooks/useAuth';
 
 const PersistLogin = () => {
-    const [isLoading,setIsLoading] = useState(true)
-    const { setAuth,auth } = useContext(AuthContext);
+    const [isLoading, setIsLoading] = useState(true);
     const refresh = useRefreshToken();
-    
+    const { auth, persist } = useAuth();
+
     useEffect(() => {
         let isMounted = true;
 
         const verifyRefreshToken = async () => {
             try {
-            console.log(isMounted)
                 await refresh();
             }
             catch (err) {
@@ -27,30 +25,26 @@ const PersistLogin = () => {
 
         // persist added here AFTER tutorial video
         // Avoids unwanted call to verifyRefreshToken
-        !auth?.accessToken ? verifyRefreshToken() : setIsLoading(false);
+        !auth?.accessToken && persist ? verifyRefreshToken() : setIsLoading(false);
 
         return () => isMounted = false;
     }, [])
 
-    
-    const render = () => {
-        if(isLoading){
-            return(<p>loading....</p>)
-        }else{
-            return(<Outlet />)
-        }
-    
-    }
-    
-    
-  return (
-    <>
-        {render()}
-    </>
-  )
+    useEffect(() => {
+        console.log(`isLoading: ${isLoading}`)
+        console.log(`aT: ${JSON.stringify(auth?.accessToken)}`)
+    }, [isLoading])
+
+    return (
+        <>
+            {!persist
+                ? <Outlet />
+                : isLoading
+                    ? <p>Loading...</p>
+                    : <Outlet />
+            }
+        </>
+    )
 }
 
-export default PersistLogin;
-
-//^ this component handle the logic to say if we need to go check that refresh token and that will help our persistent logic login
-//! only check that refresh token endpoint when it needs to
+export default PersistLogin
