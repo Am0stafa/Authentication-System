@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-
+import useLocalStorage from '../hooks/useLocalStorage';
 import axios from '../api/axios';
 const LOGIN_URL = '/auth';
 
@@ -15,7 +15,7 @@ const Login = () => {
     const userRef = useRef();
     const errRef = useRef();
 
-    const [user, setUser] = useState('');
+    const [user, setUser] = useLocalStorage('user','');
     const [pwd, setPwd] = useState('');
     const [errMsg, setErrMsg] = useState('');
 
@@ -38,11 +38,9 @@ const Login = () => {
                     withCredentials: true
                 }
             );
-            console.log(JSON.stringify(response?.data));
-            //console.log(JSON.stringify(response));
+  
             const accessToken = response?.data?.accessToken;
-            const roles = response?.data?.roles;
-            setAuth({ user, pwd, roles, accessToken });
+            setAuth({ user,accessToken });
             setUser('');
             setPwd('');
             navigate(from, { replace: true });
@@ -52,7 +50,7 @@ const Login = () => {
             } else if (err.response?.status === 400) {
                 setErrMsg('Missing Username or Password');
             } else if (err.response?.status === 401) {
-                setErrMsg('Unauthorized');
+                setErrMsg('Wrong email or password');
             } else {
                 setErrMsg('Login Failed');
             }

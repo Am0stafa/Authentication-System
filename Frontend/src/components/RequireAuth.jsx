@@ -1,5 +1,6 @@
 import { useLocation, Navigate, Outlet } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import jwt_decode from "jwt-decode";
 
 const RequireAuth = ({ allowedRoles }) => {
     const { auth } = useAuth();
@@ -12,10 +13,13 @@ const RequireAuth = ({ allowedRoles }) => {
 //* we are going to check the roles that are stored in our state and then we are going to find if the allowed roles include any of the roles provided in allowedRoles if we found atleast one we will pass otherwise we will check to see if a user exist if it does we send him to the unauthorized page if the user isnt logged in we navigate to login
 
 //* check to see if there is a user which will indicate to us wether the user is logged in or not
-//* outlet represent any child components of required auth so only if w have a user it will show the child components
-    
+//* outlet represent any child components of required auth so only if we have a user it will show the child components
+    const decoded = auth?.accessToken ? jwt_decode(auth.accessToken) : undefined;
+    const roles = decoded?.UserInfo?.roles || []
+
     const pass = () =>{
-        if (auth?.roles?.find(role => allowedRoles?.includes(role))){
+  
+        if (roles.find(role => allowedRoles?.includes(role))){
           return( <Outlet/>)
         }
         else if(auth?.user){

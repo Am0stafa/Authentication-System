@@ -11,11 +11,9 @@ const useRefreshToken = () => {
             withCredentials: true
         });
         setAuth(prev => {
-            console.log(JSON.stringify(prev));
-            console.log(response.data.accessToken);
+
             return {
                 ...prev,
-                roles: response.data.roles,
                 //! we want to overwrite the access token with the new access token                
                 accessToken: response.data.accessToken
             }

@@ -8,7 +8,9 @@ const userSchema = new Schema({
     },
     password:{
         type: String,
-        required: true
+        required: true,
+        select:false //! still doesnt hide from creation
+
     },
     refreshToken:[String],//! it is an array for multi device support
     roles:{

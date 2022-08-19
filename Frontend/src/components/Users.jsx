@@ -40,7 +40,9 @@ const Users = () => {
             {users?.length
                 ? (
                     <ul>
-                        {users.map((user, i) => <li key={i}>{user?.username}</li>)}
+                        {users.map((user) => <li key={user?._id}>{user?.username}
+                        <button className="button-62" role="button" style={{float: "right"}}>Delete user</button>
+ </li>)}
                     </ul>
                 ) : <p>No users to display</p>
             }
