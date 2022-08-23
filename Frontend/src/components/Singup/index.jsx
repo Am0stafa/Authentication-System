@@ -12,6 +12,7 @@ const Signup = () => {
 	});
 	const [error, setError] = useState("");
 	const navigate = useNavigate();
+	const [msg, setMsg] = useState("");
 
 	const handleChange = (e) => {
 		 setData({ ...data, [e.target.name]: e.target.value });
@@ -20,10 +21,9 @@ const Signup = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const url = "http://localhost:5001/api/users";
+			const url = "http://localhost:8080/api/users";
 			const { data: res } = await axios.post(url, data);
-			navigate("/login");
-			console.log(res.message);
+			setMsg(res.message);
 		} catch (error) {
 			if (
 				error.response &&
@@ -89,6 +89,8 @@ const Signup = () => {
 							autoComplete="current-password"
 						/>
 						{error && <div className={styles.error_msg}>{error}</div>}
+						{msg && <div className={styles.success_msg}>{msg}</div>}
+
 						<button type="submit" className={styles.green_btn}>
 							Sing Up
 						</button>

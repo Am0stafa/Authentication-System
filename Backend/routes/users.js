@@ -1,12 +1,12 @@
 const router = require("express").Router();
 const { User } = require("../models/user");
 const bcrypt = require("bcrypt");
-
+const Joi = require("joi");
+const crypto = require("crypto");
+const sendEmail = require("../sendEmail")
 router.post('/',async (req, res) => {
     try {
-        const { error } = validate(req.body);
-		if (error)
-			return res.status(400).send({ message: error.details[0].message });
+
 			
 	    //! check for duplicates
 
@@ -20,12 +20,15 @@ router.post('/',async (req, res) => {
 		const hashPassword = await bcrypt.hash(req.body.password, 10);
 		
         const newUser = await User.create({
-            ...req.body, password: hashPassword 
+            ...req.body, password: hashPassword,
+            activateToken:{ token:crypto.randomBytes(32).toString("hex")}
         })
- 
+    
 
-        
-        res.status(201).json({ 'success': `New user ${user} created!` });
+		const url = `${process.env.BASE_URL}users/${newUser.id}/verify/${newUser.activateToken.token}`;
+		await sendEmail(newUser.email, "Verify Email", url);
+		
+        res.status(201).json({ 'success':"an email send to your account"});
 				
 		
     } catch (err) {
@@ -34,13 +37,30 @@ router.post('/',async (req, res) => {
     }
     
 })
+router.get("/:id/verify/:token/", async (req, res) => {
+try {
 
-const validate = (data) => {
-	const schema = Joi.object({
-		email: Joi.string().email().required().label("Email"),
-		password: Joi.string().required().label("Password"),
+
+	const userId = req.params.id
+	const tokenVal = req.params.token
+	const user = await User.findOne({_id: userId})
+	if (!user) return res.status(400).send({ message: "Invalid link" });
+	const token = await User.findOne({"activateToken.token":tokenVal})
+	if (!token) return res.status(400).send({ message: "Invalid token" });
+	const newUser =await User.findByIdAndUpdate(user._id, {verified: true , $unset: { activateToken: 1 } },
+	{
+		new: true,
+		runValidators: true
 	});
-	return schema.validate(data);
-};
+
+	res.status(200).send({ message: "Email verified successfully" });
+
+} catch (error) {
+	res.status(500).send({ message: "Internal Server Error" });
+
+}
+})
+
+
 
 module.exports = router;
