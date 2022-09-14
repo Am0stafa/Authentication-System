@@ -5,4 +5,4 @@ TODO:\
 -password reset \
 -google login \
 -Automatically login when signup\
--RSA with jwt\
+-RSA with jwt
