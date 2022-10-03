@@ -5,6 +5,7 @@ TODO:\
 -iamhuman check \
 -email verify\
 -password reset \
+-update password \
 -google login \
 -Automatically login when signup\
 -RSA with jwt
