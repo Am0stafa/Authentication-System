@@ -1,6 +1,9 @@
 # Authentication-System
 TODO:\
 -add security middlewares \
+-add user profile page \
+-add salt\
+-add phone number functionality and choese if they whant 2fa \
 -iamhuman check \
 -email verify\
 -password reset \
@@ -13,4 +16,4 @@ Admin page with: \
 -see all users \
 -deactivate user account \
 -delete user account \
--give roles by having impersonate user role
+-give roles by having impersonate user role GODMODE
