@@ -36,7 +36,7 @@ const PersistLogin = () => {
     // }, [isLoading])
 
     //! if we dont have persist go straight to those components otherwise check for loading
-
+    console.log("running")
     return (
         <>
             {!persist

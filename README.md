@@ -2,9 +2,9 @@
 TODO:\
 -add security middlewares \
 -add user profile page \
--concate the file upload \
+-add the file upload \
 -add salt\
--add phone number functionality and choese if they whant 2fa \
+-add phone number functionality and choses if they want 2fa \
 -iamhuman check \
 -email verify\
 -password reset \

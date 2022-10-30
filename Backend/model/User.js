@@ -2,15 +2,30 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-    username:{
+    name: {
         type: String,
+        trim:true,
+        required: true
+    },
+    email:{
+        type: String,
+        trim:true,
         required: true
     },
     password:{
         type: String,
-        required: true
+        minlength: 8,
+        required: true,
+    },
+    pepper:{
+        type:String,
+        required:true,
     },
     refreshToken:[String],//! it is an array for multi device support
+    phoneNumber: {
+        type:Number,
+        
+    },
     roles:{
         User: {
             type:Number,
