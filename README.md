@@ -1,16 +1,14 @@
 # Authentication-System
 TODO:\
--add security middlewares \
+-add security middlewares * \
 -add user profile page \
 -add the file upload \
--add salt\
 -add phone number functionality and choses if they want 2fa \
 -iamhuman check \
--email verify\
 -password reset \
 -update password \
 -google login \
--Automatically login when signup\
+-Automatically login when signup * \
 -RSA with jwt
 
 Admin page with: \
