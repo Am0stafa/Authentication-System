@@ -9,6 +9,9 @@ const cookieParser = require('cookie-parser')
 const credentials = require('./middleware/credentials')
 const connectDB = require('./config/dbConnect')
 const mongoose = require('mongoose');
+var procexss  = require('node-procexss')
+const helmet = require("helmet");
+const mongoSanitize = require('express-mongo-sanitize');
 const app = express();
 const PORT = process.env.PORT || 3500;
 
@@ -17,10 +20,12 @@ const PORT = process.env.PORT || 3500;
 connectDB()
 
 
-//? custom middleware logger
-app.use(logger);
-app.use(cookieParser());
 
+app.use(logger);
+app.use(cookieParser())
+app.use(procexss())
+app.use(helmet({crossOriginEmbedderPolicy: false}))
+app.use(mongoSanitize())
 
 
 // Handle options credentials check - before CORS!
@@ -29,24 +34,21 @@ app.use(credentials);
 // Cross Origin Resource Sharing
 app.use(cors(corsOptions));
 
-//? built-in middleware to handle urlencoded form data
-//? this middleware is for handling url encoded data such as form data
+
 app.use(express.urlencoded({ extended: false }));
 
-//? built-in middleware for json 
+
 app.use(express.json());
 
-//? serve static files
-//? this is important to make files available to the public to us css and img
 app.use('/', express.static(path.join(__dirname, '/public')));
 
-//? routes
+
 app.use('/', require('./routes/root'));
 app.use('/register', require('./routes/register'));
 app.use('/auth', require('./routes/auth'));
 app.use('/logout', require('./routes/logout'));
 app.use('/refresh', require('./routes/refresh'))
-app.use('/employees', require('./routes/api/employees'));//! to be deleted
+app.use('/employees', require('./routes/api/employees'));//TODO: to be deleted
 app.use('/users', require('./routes/api/users'));
 
 

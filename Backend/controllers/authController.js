@@ -1,9 +1,9 @@
 const User = require('../model/User');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const DeviceDetector = require('node-device-detector');
-const DeviceHelper   = require('node-device-detector/helper');
-const ClientHints    = require('node-device-detector/client-hints')
+// const DeviceDetector = require('node-device-detector');
+// const DeviceHelper   = require('node-device-detector/helper');
+// const ClientHints    = require('node-device-detector/client-hints')
 
 
 
@@ -23,24 +23,24 @@ const handleLogin = async (req, res) => {
     if (!match) return res.sendStatus(401); //Unauthorized
     
     //! get the device info
-    const detector = new DeviceDetector({
-        clientIndexes: true,
-        deviceIndexes: true,
-        deviceAliasCode: false,
-        osIndexes: true,
-        osAliasCode: false,        
-    });
-    const clientHints = new ClientHints;
-    const userAgent = JSON.stringify(req.headers['user-agent']);
-    const clientHintData = clientHints.parse(res.headers);
-    const deviceInfo = detector.detect(userAgent, clientHintData);
+    // const detector = new DeviceDetector({
+    //     clientIndexes: true,
+    //     deviceIndexes: true,
+    //     deviceAliasCode: false,
+    //     osIndexes: true,
+    //     osAliasCode: false,        
+    // });
+    // const clientHints = new ClientHints;
+    // const userAgent = JSON.stringify(req.headers['user-agent']);
+    // const clientHintData = clientHints.parse(res.headers);
+    // const deviceInfo = detector.detect(userAgent, clientHintData);
                
     const roles = Object.values(foundUser.roles).filter(Boolean);
 
     const accessToken = jwt.sign(
         {
             "UserInfo": {
-                "username": foundUser.username,
+                "email": foundUser.email,
                 "roles": roles
             }
         },
@@ -49,7 +49,7 @@ const handleLogin = async (req, res) => {
     );
     
     const newRefreshToken = jwt.sign(
-        { "username": foundUser.username },
+        { "email": foundUser.email },
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: '60d' }
     );

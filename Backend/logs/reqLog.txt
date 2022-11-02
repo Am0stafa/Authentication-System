@@ -872,3 +872,5 @@
 20221030	15:01:27	6edb4551-f8aa-4c83-be93-1f19ddaae2b2	POST	undefined	/auth
 20221030	15:02:56	8a1cb6c0-6062-4022-88ee-15daee2b7917	POST	undefined	/auth
 20221030	15:03:35	b5701727-d897-41ea-a100-1d0c7ce47b5c	POST	undefined	/auth
+20221102	17:52:08	b2e229ff-c121-4995-bc23-efa8a92a585b	GET	undefined	/
+20221102	17:52:08	38bef626-9c73-4bee-a5a5-2af2078b6325	GET	undefined	/css/style.css
