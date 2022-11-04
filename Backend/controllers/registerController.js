@@ -5,7 +5,12 @@ const handelNewUser = async (req, res) => {
     const {email, pwd} = req.body;
     if (!email || !pwd)
         return res.status(404).json({"status": "failed",message:"email and password are required"});
-        
+       
+    // check if its a valid email
+    const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!emailRegex.test(email))
+        return res.status(404).json({"status": "failed",message:"email is not valid"});
+       
     try {
 
         const duplicate = await userModel.findOne({ email }).exec();

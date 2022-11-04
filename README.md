@@ -1,6 +1,6 @@
 # Authentication-System
 TODO:\
--add security middlewares * \
+-remove roles from jwt \
 -add user profile page \
 -add the file upload \
 -add phone number functionality and choses if they want 2fa \
