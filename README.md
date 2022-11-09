@@ -1,5 +1,6 @@
 # Authentication-System
 TODO:\
+-add loop pepper \
 -remove roles from jwt \
 -add user profile page \
 -add the file upload \

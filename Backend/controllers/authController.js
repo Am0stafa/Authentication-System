@@ -14,6 +14,8 @@ const handleLogin = async (req, res) => {
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!emailRegex.test(email))
         return res.status(404).json({"status": "failed",message:"email is not valid"});
+    
+    // const pepper = [00,01,10,11];
 
     const foundUser = await User.findOne({ email }).exec();
     if (!foundUser) return res.sendStatus(401); //Unauthorized
@@ -21,11 +23,16 @@ const handleLogin = async (req, res) => {
     const foundPass = foundUser.password
     const salt = process.env.SALT
     const pepper = foundUser.pepper
+    
+    // const matchh = pepper.map((pep) => {
+    //     return crypto.createHash('sha256').update(pep + salt + pwd).digest('hex') === foundPass
+    // })
+    
     const match = crypto.createHash('sha512').update(salt + pwd + pepper).digest('hex') === foundPass;
     
     if (!match) return res.sendStatus(401); //Unauthorized
     
-    //! get the device info
+    //TODO: get the device info
     // const detector = new DeviceDetector({
     //     clientIndexes: true,
     //     deviceIndexes: true,
