@@ -15,20 +15,18 @@ const handleLogin = async (req, res) => {
     if (!emailRegex.test(email))
         return res.status(404).json({"status": "failed",message:"email is not valid"});
     
-    // const pepper = [00,01,10,11];
 
     const foundUser = await User.findOne({ email }).exec();
     if (!foundUser) return res.sendStatus(401); //Unauthorized
         
     const foundPass = foundUser.password
     const salt = process.env.SALT
-    const pepper = foundUser.pepper
+    const peppers = ["00","01","10","11"];
     
-    // const matchh = pepper.map((pep) => {
-    //     return crypto.createHash('sha256').update(pep + salt + pwd).digest('hex') === foundPass
-    // })
-    
-    const match = crypto.createHash('sha512').update(salt + pwd + pepper).digest('hex') === foundPass;
+    const match = peppers.find((pep) => {
+        return (crypto.createHash('sha512').update(salt+pwd+pep).digest('hex') === foundPass)
+    })
+
     
     if (!match) return res.sendStatus(401); //Unauthorized
     
@@ -67,7 +65,6 @@ const handleLogin = async (req, res) => {
     //* in case of cookie found
     
    //! there could be an existing cookie if we didn't sign out but the user went back to the login page if found we do 2 things 
-    //? of course we could prevent this in the frontend but for extra security
     const cookies = req.cookies;
 
     //! 1) if we dont have any cookie with the jwt  we just get the cookies array from the db and if there is we will filter it from the array
@@ -98,7 +95,7 @@ const handleLogin = async (req, res) => {
     
     // Saving refreshToken with current user
     foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
-    const result = await foundUser.save();
+    await foundUser.save();
 
     // Creates Secure Cookie with refresh token
     res.cookie('jwt', newRefreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });

@@ -1,4 +1,10 @@
-    //! here we take codes
+/*
+    req.roles passed from the jwt
+    rolesArray the roles that is passed in that will be allowed
+    we map through the roles that was assigned to this user and comparing them to get true or false with the roles array that was passed into this route
+    @param allowedRoles {integer} we take code
+    @return {status} either pass or no
+*/
 const verifyRoles = (...allowedRoles) => {
 
     return (req, res, next) => {
@@ -11,6 +17,4 @@ const verifyRoles = (...allowedRoles) => {
 }
 
 module.exports = verifyRoles
-//? req.roles passed from the jwt
-//? rolesArray the roles that is passed in that will be allowed
-//! we map through the roles that was assigned to this user and comparing them to get true or false with the roles array that was passed into this route
+

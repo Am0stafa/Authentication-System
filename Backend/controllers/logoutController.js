@@ -22,7 +22,7 @@ const handleLogout = async (req, res) => {
     //! we wont set it to an empty array to support multi device login as setting it to an empty array will log all devices out
     foundUser.refreshToken = foundUser.refreshToken.filter(rt => rt !== refreshToken)
   
-    const result = await foundUser.save();
+    await foundUser.save();
 
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
     res.sendStatus(204);

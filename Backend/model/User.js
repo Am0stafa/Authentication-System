@@ -17,10 +17,6 @@ const userSchema = new Schema({
         minlength: 8,
         required: true,
     },
-    pepper:{
-        type:String,
-        required:true,
-    },
     refreshToken:[String],//! it is an array for multi device support
     phoneNumber: {
         type:Number,

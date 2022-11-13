@@ -24,15 +24,16 @@ const handelNewUser = async (req, res) => {
 
         
         const salt =  process.env.SALT
-        const pepper = crypto.randomBytes(5).toString('hex');
+        // const pepper = crypto.randomBytes(5).toString('hex');
+        const peppers = ["00","01","10","11"];
+        const pepper = peppers[Math.floor(Math.random() * 4)]
 
-        const hashPwd =crypto.createHash('sha512').update(salt+pwd+pepper).digest('hex');
+        const hashPwd = crypto.createHash('sha512').update(salt+pwd+pepper).digest('hex');
         
         await userModel.create({
             name,
             email,
             "password":hashPwd,
-            "pepper":pepper,
         })
                 
         
