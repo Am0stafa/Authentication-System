@@ -935,3 +935,4 @@
 20221114	01:42:14	26b62271-9570-47fa-8d72-57de5495dea9	GET	http://localhost:3000	/logout
 20221114	01:43:03	5c18df85-0135-4c97-9f03-16b102b63744	OPTIONS	http://localhost:3000	/auth
 20221114	01:43:03	d8039ee9-ed62-4d52-a934-5b9dae6ab58c	POST	http://localhost:3000	/auth
+20221119	00:58:04	df1a995b-8e9f-4055-a7a5-1fded57d8fbd	GET	http://localhost:3000	/refresh

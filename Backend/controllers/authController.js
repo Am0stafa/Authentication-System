@@ -14,7 +14,6 @@ const handleLogin = async (req, res) => {
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!emailRegex.test(email))
         return res.status(404).json({"status": "failed",message:"email is not valid"});
-    
 
     const foundUser = await User.findOne({ email }).exec();
     if (!foundUser) return res.sendStatus(401); //Unauthorized
@@ -72,7 +71,6 @@ const handleLogin = async (req, res) => {
     
     //! 2) if we have an old cookie we need to remove it
     if(cookies?.jwt){
-        //! we need to add reuse detection as this user cookie might be stolen so we need to clear all of the refresh tokens so when the user logs back in it will find that that token what actually reused because the token wouldn't be there
         /* 
         Scenario added here: 
             1) User logs in but never uses RT and does not logout 
@@ -81,8 +79,7 @@ const handleLogin = async (req, res) => {
         */
         const refreshToken = cookies.jwt;
         const foundToken = await User.findOne({ refreshToken }).exec();
-
-        // Detected refresh token reuse!
+        
         //! if we dont find the token we know that its already had been used then because our user would not have used that token to it should be in the array even if it is expired. However, if they have not used there token but it isn't in there then we know somebody else had used it
         if (!foundToken) { 
             console.log('attempted refresh token reuse at login!')

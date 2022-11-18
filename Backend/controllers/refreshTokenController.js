@@ -9,15 +9,11 @@ const handleRefreshToken = async (req, res) => {
     const refreshToken = cookies.jwt;
     
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true});
-
     
     const foundUser = await User.findOne({ refreshToken }).exec();
+    if (!foundUser) return res.sendStatus(403); //Forbidden
     
-    
-    //! Now we have found the token it is a valid and we are ready to resend a new one after removing this old token from the database
     const newRefreshTokenArray = foundUser.refreshToken.filter((token) => token !== refreshToken)
-    
-    
     
     jwt.verify(
         refreshToken,
@@ -28,9 +24,9 @@ const handleRefreshToken = async (req, res) => {
                 //^ in that case we need to update the data in the database
                 console.log('expired refresh token')
                 foundUser.refreshToken = [...newRefreshTokenArray];
-                const result = await foundUser.save(); 
+                await foundUser.save(); 
             }
-            if (err || foundUser.email !== decoded.email) return res.sendStatus(403); //! you need to re login
+            if (err || foundUser.email !== decoded.email) return res.sendStatus(403); //! collision or expired
             
     
             const roles = Object.values(foundUser.roles).filter(Boolean);
@@ -44,7 +40,7 @@ const handleRefreshToken = async (req, res) => {
                     }
                 },
                 process.env.ACCESS_TOKEN_SECRET,
-                { expiresIn: '15m' }
+                { expiresIn: '10s' }
             );
             //& refreshToken
             const newRefreshToken = jwt.sign(

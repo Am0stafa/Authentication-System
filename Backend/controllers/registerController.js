@@ -24,7 +24,6 @@ const handelNewUser = async (req, res) => {
 
         
         const salt =  process.env.SALT
-        // const pepper = crypto.randomBytes(5).toString('hex');
         const peppers = ["00","01","10","11"];
         const pepper = peppers[Math.floor(Math.random() * 4)]
 
