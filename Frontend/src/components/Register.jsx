@@ -74,7 +74,7 @@ const Register = () => {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true
             })
-            // setSuccessMessage(register.data.success)
+            setSuccessMessage(register.data.success)
             setSuccess(true)
             setUser('');
             setPwd('');

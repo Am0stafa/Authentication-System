@@ -8,12 +8,6 @@ const SocialMedia = () => {
           <p className="login-button-info-text login-info-text text-center">EASILY USING</p>
           <div className="login-button-container container-fluid">
             <div className="col-md-6 col-sm-6 col-xs-6">
-              <button className="login-facebook login-button">
-                <span className="header-sprite login-fb-logo" />
-                    FACEBOOK
-              </button>
-            </div>
-            <div className="col-md-6 col-sm-6 col-xs-6">
               <button className="login-google login-button" id="gPlusLogin">
                 <span className="header-sprite login-gplus-logo" />
                     GOOGLE
