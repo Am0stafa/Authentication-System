@@ -3,6 +3,7 @@ import useAuth from '../hooks/useAuth';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 import axios from '../api/axios';
+import SocialMedia from './socialMedia /SocialMedia';
 const LOGIN_URL = '/auth';
 
 const Login = () => {
@@ -10,7 +11,7 @@ const Login = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from?.pathname || "/";
+    const from = location.state?.from?.pathname ??"/";
 
     const userRef = useRef();
     const errRef = useRef();
@@ -73,6 +74,7 @@ const Login = () => {
         <section>
             <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
             <h1>Sign In</h1>
+            <SocialMedia/>
             <form onSubmit={handleSubmit}>
                 <label htmlFor="email">Email:</label>
                 <input

@@ -1,80 +1,63 @@
 import { useRef, useState, useEffect } from "react";
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import ReactLoading from 'react-loading';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from '../api/axios';
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
+import SocialMedia from './socialMedia /SocialMedia';
 
-//! user regex to validate the username
-//^ must start wih a lower or upper case letter after that this must be followed by from 3 to 23 charterers, digits hyphens or underscores
-const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
-//! password regex to validate the password
+
 //^ one uppercase letter one lowercase letter, one digit and one special charterer and it can be anywhere from 8 to 28 charterers
 const PWD_REGEX =  /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-
-const MAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+const MAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 const Register = () => {
-//! those will alow us to set the focus on the input
     const userRef = useRef();
-//! if we get an error we need to put the focus on that
     const errRef = useRef();
+    const navigate = useNavigate();
     
-    //! this is for the user input
     const [user, setUser] = useState('');
-    //! that is tight to where the name is valid or not according to the regex
     const [validName, setValidName] = useState(false);
-    //! whether we have focus on that input field or not
     const [userFocus, setUserFocus] = useState(false);
 
-    //* some thing as above but for the password
     const [pwd, setPwd] = useState('');
     const [validPwd, setValidPwd] = useState(false);
     const [pwdFocus, setPwdFocus] = useState(false);
 
-    //* some thing as above but for the matching password
     const [matchPwd, setMatchPwd] = useState('');
     const [validMatch, setValidMatch] = useState(false);
     const [matchFocus, setMatchFocus] = useState(false);
 
-    //! for a possible error message if an error exist
     const [errMsg, setErrMsg] = useState('');
-    //! if we successfully submitted the registration form or not
     const [success, setSuccess] = useState(false);
     
-    
-    const [close, setClose] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('')
 
     useEffect(() => {
-        if (!success){
+        if (!success)
             userRef.current.focus();
-        }
     }, [])
     
-    //! when user input change check if valid
     useEffect(() => {
-        setValidName(USER_REGEX.test(user))
+        setValidName(MAIL_REGEX.test(user))
     },[user])
     
-    //! same for the password
     useEffect(() => {
         setValidPwd(PWD_REGEX.test(pwd))
         setValidMatch(pwd === matchPwd)
     },[pwd,matchPwd])
-    
-    //! any time the user changes any if the fields we reset the error message as the user saw the message and adjusted
-    
+        
     useEffect(() => {
         setErrMsg('');
     }, [user, pwd, matchPwd])
 
-    //TODO: run only once
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        //^ if the button enabled with JS hack from the console by selecting the button and enabling it
-        
+        //& retest so that if the user disable javascript
         const v1 = PWD_REGEX.test(pwd)
-        const v2 = USER_REGEX.test(user)
+        const v2 = MAIL_REGEX.test(user)
         if (!user || !pwd || !matchPwd ||!v1 || !v2){
             setErrMsg('invalid fields');
             console.error("invalid")
@@ -84,20 +67,21 @@ const Register = () => {
 
         try {
             const register = await axios.post('/register',{
-                user,
+                email:user,
                 pwd
             },
             {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true
             })
-
+            setSuccessMessage(register.data.success)
             setSuccess(true)
             setUser('');
             setPwd('');
             setMatchPwd('');
+            setTimeout(() => {  navigate('/') }, 2000);
         } catch (err) {
-            //! if no error response meaning that we haven't header from the server at all
+            //& if no error response meaning that we haven't header from the server at all
             if (!err?.response) {
                 setErrMsg('No Server Response');
             } else if (err.response?.status === 409) {
@@ -105,8 +89,9 @@ const Register = () => {
             } else {
                 setErrMsg('Registration Failed')
             }
-            errRef.current.focus(); //! for screen readers          
+            errRef.current.focus();          
             setSuccess(false)
+            setSuccessMessage("")
 
         }
             
@@ -115,24 +100,29 @@ const Register = () => {
 
   return (
   <>
-  {success ? (<section>
-                <h1>Success!</h1>
-                <p>
-                    <a href="#">Sign In</a>
-                </p>
-            </section>):(
+  { 
+    success ? (
+        <section>
+            <h1>Success!</h1>
+            <p>
+                {successMessage}
+                <ReactLoading type="spokes" color="#fff" height={'20%'} width={'20%'} />
+            </p>
+        </section>
+    ) : (
     <section>
-        <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+    <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
         <h1>Register</h1>
+        <SocialMedia/>
         <form onSubmit={handleSubmit}>
-            <label htmlFor="username">{/* el htmlFor match the id */}
-                Username:
+            <label htmlFor="email">
+                Email:
                 <FontAwesomeIcon icon={faCheck} className={validName ? "valid" : "hide"} />
                 <FontAwesomeIcon icon={faTimes} className={validName || !user ? "hide" : "invalid"} />
             </label>
             <input
                 type="text"
-                id="username"
+                id="email"
                 ref={userRef}
                 onChange={(e) => setUser(e.target.value)}
                 value={user}
@@ -143,9 +133,7 @@ const Register = () => {
                 />
             <p id="uidnote" className={userFocus && user && !validName ? "instructions" : "offscreen"}>
                 <FontAwesomeIcon icon={faInfoCircle} />
-                4 to 24 characters.<br />
-                Must begin with a letter.<br />
-                Letters, numbers, underscores, hyphens allowed.
+                invalid email address
             </p>
             
             
@@ -198,7 +186,7 @@ const Register = () => {
             Already registered?<br />
             <span className="line">
                 {/*put router link here*/}
-                <Link href="/login">Sign In</Link>
+                <Link to="/login">Sign In</Link>
             </span>
         </p>
     </section> )}
