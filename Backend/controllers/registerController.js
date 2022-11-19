@@ -16,7 +16,7 @@ const handelNewUser = async (req, res) => {
         const duplicate = await userModel.findOne({ email }).exec();
         if (duplicate) return res.status(409).json({"status": "Conflict",message:"A user with this email already exists"});
         
-        const name = email.split('@')[0];
+        let name = email.split('@')[0];
         //! validate name from xss
         const nameRegex = /^[a-zA-Z0-9_]{3,25}$/;
         if (!nameRegex.test(name))
@@ -26,7 +26,7 @@ const handelNewUser = async (req, res) => {
         const salt =  process.env.SALT
         const peppers = ["00","01","10","11"];
         const pepper = peppers[Math.floor(Math.random() * 4)]
-
+        console.log(pepper)
         const hashPwd = crypto.createHash('sha512').update(salt+pwd+pepper).digest('hex');
         
         await userModel.create({
@@ -39,6 +39,7 @@ const handelNewUser = async (req, res) => {
         res.status(201).json({ 'success': `New user ${name} created!` });
         
     } catch (error) {
+        console.log(error)
         return res.status(500).json({"status": "failed",message:error.message});
     }
 }
