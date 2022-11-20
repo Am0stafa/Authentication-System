@@ -3,6 +3,8 @@ TODO:\
 
 - remove roles from jwt and password from user info in login.jsx \
 - create header and footer in the outlet component \
+- test the display of username and refresh
+- remove roles from jwt \
 - add user profile page \
 - save name and email to local storage
 - add the file upload \
