@@ -14,8 +14,8 @@ html {
 
 body {
     min-height: 100vh;
-    background-color: dodgerblue;
-}
+    background-image: linear-gradient(to right bottom, #100b33, #441e56, #7f2c71, #c03b82, #ff5188);
+    }
 .App {
   display: flex;
   flex-direction: column;
