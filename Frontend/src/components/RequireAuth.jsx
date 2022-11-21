@@ -7,8 +7,6 @@ const RequireAuth = ({ allowedRoles }) => {
     
 //^ The user can be in three states: 1) logged in and authorized 2) login and  not authorized 3) not logged in
 
-//!  state={{from:location}} replace 3l4n lama ados 3ala el back button yr3ny tany to the paged i clicked from
-
 //* we are going to check the roles that are stored in our state and then we are going to find if the allowed roles include any of the roles provided in allowedRoles if we found atleast one we will pass otherwise we will check to see if a user exist if it does we send him to the unauthorized page if the user isnt logged in we navigate to login
 
 //* check to see if there is a user which will indicate to us wether the user is logged in or not
