@@ -3,14 +3,19 @@ const userModel = require('./../model/User')
 
 const handelNewUser = async (req, res) => {
     const {email, pwd} = req.body;
+    
     if (!email || !pwd)
         return res.status(404).json({"status": "failed",message:"email and password are required"});
        
     
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!emailRegex.test(email))
-        return res.status(404).json({"status": "failed",message:"email is not valid"});
-       
+        return res.status(404).json({"status": "failed", "message":"email is not valid"});
+        
+    const PWD_REGEX =  /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+    if (!PWD_REGEX.test(pwd))
+        return res.status(404).json({"status": "failed", "message" :" 8 to 24 characters.Must include uppercase and lowercase letters, a number and a special character"});
+        
     try {
 
         const duplicate = await userModel.findOne({ email }).exec();

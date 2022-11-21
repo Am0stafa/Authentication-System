@@ -10,8 +10,9 @@ const Users = () => {
 
     useEffect(() => {
         let isMounted = true;
-        const controller = new AbortController();
+        
         //! this is used to cancel the request and we will do that if the component unmounts so that we can cancel any pending request that is out there if the component unmounts this will be passed as a signal option
+        const controller = new AbortController();
         
         const getUsers = async () => {
             try {
@@ -40,7 +41,7 @@ const Users = () => {
             {users?.length
                 ? (
                     <ul>
-                        {users.map((user, i) => <li key={i}>{user?.username}</li>)}
+                        {users.map((user, i) => <li key={i}>{user?.email}</li>)}
                     </ul>
                 ) : <p>No users to display</p>
             }
