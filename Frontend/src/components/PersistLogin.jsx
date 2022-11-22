@@ -41,9 +41,7 @@ const PersistLogin = () => {
   
     const pass = () =>{
         //! persist is essential going to say whether we need to do that check at all
-    
-        return !persist ? <Outlet /> : load()
-          
+        return !persist ? <Outlet /> : load()   
     }
   
     return (
