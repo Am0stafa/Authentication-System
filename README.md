@@ -9,6 +9,7 @@ TODO:\
 - add the file upload \
 - add phone number functionality and choses if they want 2fa \
 - iamhuman check \
+- auto login on signup \
 - password reset \
 - update password \
 - google login \
