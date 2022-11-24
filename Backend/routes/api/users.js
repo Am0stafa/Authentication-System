@@ -5,6 +5,9 @@ const ROLES_LIST = require('../../config/rolesList');
 const verifyRoles = require('../../middleware/verifyRoles');
 const { verifyJWT } = require('../../middleware/verifyJWT');
 
+router.route('/getMail/:email')
+    .get(usersController.isValidEmail)
+    
 router.use(verifyJWT)
 
 router.route('/')

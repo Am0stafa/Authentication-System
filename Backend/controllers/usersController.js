@@ -25,7 +25,17 @@ const getUser = async (req, res) => {
     res.json(user);
 }
 
+const isValidEmail= async (req, res) => {
+    if (!req?.params?.email) return res.status(400).json({ "message": 'no email address provided' });
+    const user = await User.findOne({ email: req.params.email }).exec();
+    if (!user) {
+        return res.status(200).json({ 'message': false });
+    }
+    return res.status(200).json({ 'message': true });
+}
+
 module.exports = {
+    isValidEmail,
     getAllUsers,
     deleteUser,
     getUser
