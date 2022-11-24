@@ -1,5 +1,5 @@
 # Authentication-System
-TODO: \
+TODO: 
 - add user profile page \
 - add the file upload \
 - add phone number functionality and choses if they want 2fa \
@@ -9,7 +9,7 @@ TODO: \
 - google login \
 - RSA with jwt
 
-Admin page with: \
+Admin page with: 
 - see all users \
 - deactivate user account \
 - delete user account \
