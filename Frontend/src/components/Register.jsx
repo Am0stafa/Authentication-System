@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from '../api/axios';
 import { Link,useNavigate } from "react-router-dom";
 import SocialMedia from './socialMedia /SocialMedia';
+import useAuth from '../hooks/useAuth';
 
 
 //^ one uppercase letter one lowercase letter, one digit and one special charterer and it can be anywhere from 8 to 28 charterers
@@ -32,6 +33,7 @@ const Register = () => {
     const [success, setSuccess] = useState(false);
     
     const [successMessage, setSuccessMessage] = useState('')
+    const { setAuth } = useAuth();
 
     useEffect(() => {
         if (!success)
@@ -79,7 +81,20 @@ const Register = () => {
             setUser('');
             setPwd('');
             setMatchPwd('');
-            setTimeout(() => {  navigate('/') }, 2000);
+            
+            const response = await axios.post('/auth',
+                { email:user, pwd },
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            );
+
+            const accessToken = response?.data?.accessToken;
+            const roles = response?.data?.roles;
+            setAuth({ user, roles, accessToken,name:response?.data?.name });
+            
+            navigate('/');
         } catch (err) {
             //& if no error response meaning that we haven't header from the server at all
             if (!err?.response) {
@@ -89,9 +104,7 @@ const Register = () => {
             } else {
                 setErrMsg('Registration Failed')
             }
-            errRef.current.focus();          
-            setSuccess(false)
-            setSuccessMessage("")
+            console.log(err)
 
         }
             
