@@ -14,3 +14,7 @@ Admin page with:
 - deactivate user account \
 - delete user account \
 - give roles by having impersonate user role GODMODE
+
+Documentaion:
+- gif walk through
+- writh how its secure
