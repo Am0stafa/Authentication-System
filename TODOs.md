@@ -9,12 +9,6 @@ TODO:
 - google login \
 - RSA with jwt
 
-Admin page with: 
-- see all users \
-- deactivate user account \
-- delete user account \
-- give roles by having impersonate user role GODMODE
-
 Documentaion:
 - gif walk through
-- writh how its secure
+- write how its secure
