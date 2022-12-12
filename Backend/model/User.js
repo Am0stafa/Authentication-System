@@ -29,6 +29,10 @@ const userSchema = new Schema({
         },
         Editor:Number,
         Admin:Number,
+    },
+    profilePic:{
+        type:String,
+        default:'https://'
     }
 
 })

@@ -1,4 +1,5 @@
 import './socialMedia.css'
+import { signInWithGoogle } from '../../firebase/config'
 
 const SocialMedia = () => {
   return (
@@ -8,7 +9,7 @@ const SocialMedia = () => {
           <p className="login-button-info-text login-info-text text-center">EASILY USING</p>
           <div className="login-button-container container-fluid">
             <div className="col-md-6 col-sm-6 col-xs-6">
-              <button className="login-google login-button" id="gPlusLogin">
+              <button className="login-google login-button" id="gPlusLogin" onClick={signInWithGoogle}  >
                 <span className="header-sprite login-gplus-logo" />
                     GOOGLE
               </button>

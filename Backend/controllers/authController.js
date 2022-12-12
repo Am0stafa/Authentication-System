@@ -103,4 +103,64 @@ const handleLogin = async (req, res) => {
     
 }
 
+const handleSocialLogin = async (req, res) => {
+    const {displayName , email , photoURL, token} = req.body;
+    if (!email || !token) return res.status(400).json({ 'message': 'missing attributes' });
+
+    //TODO: verify token that we got from firebase
+    
+    let user = await User.findOne({ email }).exec();  
+    if (!user) {
+        user = new User({
+            email,
+            name:displayName,
+            "password":crypto.createHash('sha512').update(process.env.SALT+token).digest('hex'),
+            profilePic:photoURL
+        });
+    }
+
+    const roles = Object.values(user.roles).filter(Boolean);
+    
+    const accessToken = jwt.sign(
+        {
+            "UserInfo": {
+                "email": foundUser.email,
+                "roles": roles
+            }
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: '10s' }
+    );
+    
+    const newRefreshToken = jwt.sign(
+        { "email": foundUser.email },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: '60d' }
+    );
+    
+    const cookies = req.cookies;
+
+    let newRefreshTokenArray = !cookies?.jwt ? user.refreshToken : user.refreshToken.filter(rt => rt !== cookies.jwt);
+    
+    if(cookies?.jwt){
+        const refreshToken = cookies.jwt;
+        const foundToken = await User.findOne({ refreshToken }).exec();
+        if (!foundToken) { 
+            console.log('attempted refresh token reuse at login!')
+            newRefreshTokenArray = [];
+        }
+        res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });        
+    }
+    
+    
+    user.refreshToken = [...newRefreshTokenArray, newRefreshToken];
+    await user.save();
+
+    res.cookie('jwt', newRefreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
+
+
+    res.json({ user:foundUser.email , roles, accessToken, name:foundUser.name });
+
+}
+
 module.exports = { handleLogin };
