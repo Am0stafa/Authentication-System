@@ -9,7 +9,6 @@ const cookieParser = require('cookie-parser')
 const credentials = require('./middleware/credentials')
 const connectDB = require('./config/dbConnect')
 const mongoose = require('mongoose');
-var procexss  = require('node-procexss')
 const helmet = require("helmet");
 const mongoSanitize = require('express-mongo-sanitize');
 const app = express();
@@ -23,7 +22,6 @@ connectDB()
 
 app.use(logger);
 app.use(cookieParser())
-app.use(procexss())
 app.use(helmet({crossOriginEmbedderPolicy: false}))
 app.use(mongoSanitize())
 

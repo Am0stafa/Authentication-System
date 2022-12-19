@@ -105,9 +105,10 @@ const handleLogin = async (req, res) => {
 
 const handleSocialLogin = async (req, res) => {
     const {displayName , email , photoURL, token} = req.body;
-    if (!email || !token) return res.status(400).json({ 'message': 'missing attributes' });
+    if (!email || !token) return res.status(400).json({ 'message': 'invalid request' });
 
     //TODO: verify token that we got from firebase
+    
     
     let user = await User.findOne({ email }).exec();  
     if (!user) {
