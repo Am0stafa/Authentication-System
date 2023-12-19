@@ -1,6 +1,8 @@
 const crypto = require("crypto");
 const userModel = require("./../model/User");
+const validator = require("validator");
 
+// register new user
 const handelNewUser = async (req, res) => {
   const { email, pwd } = req.body;
 
@@ -9,32 +11,40 @@ const handelNewUser = async (req, res) => {
       .status(404)
       .json({ status: "failed", message: "email and password are required" });
 
-  const emailRegex =
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  if (!emailRegex.test(email))
+  if (email.length > 256) {
+    return res
+      .status(400)
+      .json({ status: "failed", message: "Email is too long" });
+  }
+
+  if (!validator.isEmail(email)) {
     return res
       .status(404)
-      .json({ status: "failed", message: "email is not valid" });
+      .json({ status: "failed", message: "Email is not valid" });
+  }
+
+  if (pwd.length < 8 || pwd.length > 24) {
+    return res.status(400).json({
+      status: "failed",
+      message: "Password must be between 8 and 24 characters",
+    });
+  }
 
   const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
   if (!PWD_REGEX.test(pwd))
-    return res
-      .status(404)
-      .json({
-        status: "failed",
-        message:
-          " 8 to 24 characters.Must include uppercase and lowercase letters, a number and a special character",
-      });
+    return res.status(404).json({
+      status: "failed",
+      message:
+        "Must include uppercase and lowercase letters, a number and a special character",
+    });
 
   try {
     const duplicate = await userModel.findOne({ email }).exec();
     if (duplicate)
-      return res
-        .status(409)
-        .json({
-          status: "Conflict",
-          message: "A user with this email already exists",
-        });
+      return res.status(409).json({
+        status: "Conflict",
+        message: "A user with this email already exists",
+      });
 
     let name = email.split("@")[0];
     //! validate name from xss
@@ -44,7 +54,6 @@ const handelNewUser = async (req, res) => {
     const salt = process.env.SALT;
     const peppers = ["00", "01", "10", "11"];
     const pepper = peppers[Math.floor(Math.random() * 4)];
-    console.log(pepper);
     const hashPwd = crypto
       .createHash("sha512")
       .update(salt + pwd + pepper)

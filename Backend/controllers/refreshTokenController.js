@@ -1,6 +1,7 @@
 const User = require("../model/User");
 const jwt = require("jsonwebtoken");
 
+// to generate a new refresh token
 const handleRefreshToken = async (req, res) => {
   const cookies = req.cookies;
 
@@ -22,7 +23,6 @@ const handleRefreshToken = async (req, res) => {
     process.env.REFRESH_TOKEN_SECRET,
     async (err, decoded) => {
       if (err) {
-        //^ in that case we need to update the data in the database
         console.log("expired refresh token");
         foundUser.refreshToken = [...newRefreshTokenArray];
         await foundUser.save();
@@ -40,7 +40,7 @@ const handleRefreshToken = async (req, res) => {
           },
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "10s" }
+        { expiresIn: "15m" }
       );
       //& refreshToken
       const newRefreshToken = jwt.sign(
@@ -58,7 +58,7 @@ const handleRefreshToken = async (req, res) => {
         httpOnly: true,
         secure: true,
         sameSite: "None",
-        maxAge: 24 * 60 * 60 * 1000,
+        maxAge: 60 * 60 * 24 * 60, // 60 days
       });
 
       res.json({

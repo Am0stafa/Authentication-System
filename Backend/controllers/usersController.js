@@ -1,4 +1,5 @@
 const User = require("../model/User");
+const jwt = require("jsonwebtoken");
 
 const getAllUsers = async (req, res) => {
   const users = await User.find();
@@ -39,6 +40,26 @@ const isValidEmail = async (req, res) => {
     return res.status(200).json({ message: false });
   }
   return res.status(200).json({ message: true });
+};
+
+const getMe = async (req, res) => {
+  const accessToken = req.cookies.jwt;
+  if (!accessToken) {
+    return res.status(401).json({ message: "Access token is required" });
+  }
+
+  try {
+    const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+    const userEmail = decoded.UserInfo.email;
+
+    const user = await User.findOne({ email: userEmail }).exec();
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    return res.status(403).json({ message: "Invalid or expired access token" });
+  }
 };
 
 module.exports = {
