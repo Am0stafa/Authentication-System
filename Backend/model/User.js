@@ -33,6 +33,18 @@ const userSchema = new Schema({
     type: String,
     default: "https://",
   },
+  loginInfo: [
+    {
+      device: String,
+      browser: String,
+      ip: String,
+      location: String,
+      date: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);

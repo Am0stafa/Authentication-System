@@ -11,9 +11,15 @@ router.use(verifyJWT);
 
 router.route("/me").get(usersController.getMe);
 
+router.route("/update/:refreshToken")
+  .patch(usersController.updateUserDetails);
+
 router
   .route("/")
   .get(verifyRoles(ROLES_LIST.Admin), usersController.getAllUsers);
+
+  router.route("/changeRole")
+  .post(verifyRoles(ROLES_LIST.Admin), usersController.changeUserRole);
 
 router
   .route("/:id")

@@ -2,9 +2,8 @@ const User = require("../model/User");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
-// const DeviceDetector = require('node-device-detector');
-// const DeviceHelper   = require('node-device-detector/helper');
-// const ClientHints    = require('node-device-detector/client-hints')
+const useragent = require("express-useragent");
+const axios = require("axios");
 
 // login
 const handleLogin = async (req, res) => {
@@ -91,8 +90,9 @@ const handleLogin = async (req, res) => {
     }
     res.clearCookie("jwt", { httpOnly: true, sameSite: "None", secure: true });
   }
-
+  const userInfo = await getUserInfo(req);
   foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
+  foundUser.loginInfo.push(userInfo);
   const user = await foundUser.save();
 
   // Creates Secure Cookie with refresh token
@@ -105,6 +105,30 @@ const handleLogin = async (req, res) => {
 
   // Send authorization roles and access token to user
   res.json({ user: foundUser.email, roles, accessToken, name: foundUser.name });
+};
+
+const getUserInfo = async (req) => {
+  const APIKEY = process.env.APIKEY;
+  const ua = useragent.parse(req.headers["user-agent"]);
+  const device = ua.isMobile ? "Mobile" : ua.isTablet ? "Tablet" : "Desktop";
+  const browser = ua.browser;
+  // api call to http://api.ipstack.com/41.130.142.138?access_key=d00cbad7e4f89ff2a9ad32154d75207b&format=1
+  let ipAdd = req.ip;
+  if (ipAdd.substr(0, 7) === "::ffff:") {
+    ipAdd = ipAdd.substr(7);
+  }
+  const url = `http://api.ipstack.com/${ipAdd}?access_key=${APIKEY}&format=1`;
+  const data = await axios.get(url).then((res) => res.data);
+  console.log(data);
+  const ip = data.ip;
+  const location = `${data.city}, ${data.region_name}`;
+
+  return {
+    device,
+    browser,
+    ip,
+    location,
+  };
 };
 
 module.exports = { handleLogin };

@@ -2,7 +2,7 @@ const User = require("../model/User");
 
 const handleLogout = async (req, res) => {
   //! On client also delete the accessToken in the memory in the client application
-  
+
   const cookies = req.cookies;
   if (!cookies?.jwt) return res.sendStatus(204); //No content
   const refreshToken = cookies.jwt;
@@ -22,7 +22,7 @@ const handleLogout = async (req, res) => {
 
   await foundUser.save();
 
-  res.clearCookie("jwt", { httpOnly: true, sameSite: "None"}); //, secure: true
+  res.clearCookie("jwt", { httpOnly: true, sameSite: "None" }); //, secure: true
   res.sendStatus(204);
 };
 
