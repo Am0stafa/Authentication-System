@@ -4,7 +4,6 @@ import useAuth from "../hooks/useAuth";
 const RequireAuth = ({ allowedRoles }) => {
     const { auth } = useAuth();
     const location = useLocation();
-    console.log(auth)
     
 //^ The user can be in three states: 1) logged in and authorized 2) login and  not authorized 3) not logged in
 

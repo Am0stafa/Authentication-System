@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import useLogout from "../hooks/useLogout";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const Home = () => {
   const navigate = useNavigate();
   const logout = useLogout();
+  const [user, setUser] = useState("");
 
   const signOut = async () => {
     await logout();
@@ -15,6 +17,22 @@ const Home = () => {
   const goToProfile = () => {
     navigate("/profile");
   };
+
+
+  const axiosPrivate = useAxiosPrivate();
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const { data } = await axiosPrivate.get("/users/me");
+        setUser(data);
+        // console.log(user);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getUser();
+  }, [axiosPrivate]);
 
   // Inline CSS for the circular image
   const userProfileStyle = {
@@ -34,7 +52,7 @@ const Home = () => {
     <section style={{ position: 'relative' }}> {/* Add relative positioning to the section */}
       <Link to="/profile" onClick={goToProfile} style={{ textDecoration: 'none' }}>
         <img
-          src="/path-to-your-user-image.jpg" // Replace with the path to your user image
+          src={user.profilePic}
           alt="User"
           style={userProfileStyle}
         />

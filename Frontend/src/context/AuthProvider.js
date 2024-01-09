@@ -5,7 +5,6 @@ const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState({});
     //! to check if the user want to persist login
-    console.log(auth)
     const [persist, setPersist] = useState(JSON.parse(localStorage.getItem("persist")) || false);
 
     return (

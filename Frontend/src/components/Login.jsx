@@ -3,7 +3,7 @@ import useAuth from "../hooks/useAuth";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import axios from "../api/axios";
-import SocialMedia from "./socialMedia /SocialMedia";
+import SocialMedia from "./socialMedia/SocialMedia";
 const LOGIN_URL = "/auth";
 
 const Login = () => {
