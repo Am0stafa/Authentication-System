@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const useragent = require("express-useragent");
 const axios = require("axios");
+          
 
 // login
 const handleLogin = async (req, res) => {
@@ -42,8 +43,6 @@ const handleLogin = async (req, res) => {
   });
 
   if (!match) return res.sendStatus(401); //Unauthorized
-
-  //TODO: get the device info
 
   const roles = Object.values(foundUser.roles).filter(Boolean);
 
@@ -90,9 +89,9 @@ const handleLogin = async (req, res) => {
     }
     res.clearCookie("jwt", { httpOnly: true, sameSite: "None", secure: true });
   }
-  const userInfo = await getUserInfo(req);
+  // const userInfo = await getUserInfo(req);
   foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
-  foundUser.loginInfo.push(userInfo);
+  // foundUser.loginInfo.push(userInfo);
   const user = await foundUser.save();
 
   // Creates Secure Cookie with refresh token
@@ -108,20 +107,20 @@ const handleLogin = async (req, res) => {
 };
 
 const getUserInfo = async (req) => {
-  const APIKEY = process.env.APIKEY;
-  const ua = useragent.parse(req.headers["user-agent"]);
-  const device = ua.isMobile ? "Mobile" : ua.isTablet ? "Tablet" : "Desktop";
-  const browser = ua.browser;
-  // api call to http://api.ipstack.com/41.130.142.138?access_key=d00cbad7e4f89ff2a9ad32154d75207b&format=1
-  let ipAdd = req.ip;
-  if (ipAdd.substr(0, 7) === "::ffff:") {
-    ipAdd = ipAdd.substr(7);
-  }
-  const url = `http://api.ipstack.com/${ipAdd}?access_key=${APIKEY}&format=1`;
-  const data = await axios.get(url).then((res) => res.data);
-  console.log(data);
-  const ip = data.ip;
-  const location = `${data.city}, ${data.region_name}`;
+  // const APIKEY = process.env.APIKEY;
+  // const ua = useragent.parse(req.headers["user-agent"]);
+  // const device = ua.isMobile ? "Mobile" : ua.isTablet ? "Tablet" : "Desktop";
+  // const browser = ua.browser;
+  // // api call to http://api.ipstack.com/41.130.142.138?access_key=d00cbad7e4f89ff2a9ad32154d75207b&format=1
+  // let ipAdd = req.ip;
+  // if (ipAdd.substr(0, 7) === "::ffff:") {
+  //   ipAdd = ipAdd.substr(7);
+  // }
+  // const url = `http://api.ipstack.com/${ipAdd}?access_key=${APIKEY}&format=1`;
+  // const data = await axios.get(url).then((res) => res.data);
+  // console.log(data);
+  // const ip = data.ip;
+  // const location = `${data.city}, ${data.region_name}`;
 
   return {
     device,

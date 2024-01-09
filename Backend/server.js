@@ -33,6 +33,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use("/", express.static(path.join(__dirname, "/public")));
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 app.use("/", require("./routes/root"));
 app.use("/register", require("./routes/register"));
@@ -59,3 +60,4 @@ app.use(errorHandler);
 mongoose.connection.on("open", () => {
   app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
 });
+

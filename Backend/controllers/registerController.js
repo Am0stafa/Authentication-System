@@ -1,6 +1,21 @@
 const crypto = require("crypto");
 const userModel = require("./../model/User");
 const validator = require("validator");
+const multer = require("multer");
+const path = require('path');
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // Make sure this uploads directory exists
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+    );
+  },
+});
+const upload = multer({ storage: storage });
 
 // register new user
 const handelNewUser = async (req, res) => {
@@ -59,11 +74,22 @@ const handelNewUser = async (req, res) => {
       .update(salt + pwd + pepper)
       .digest("hex");
 
-    await userModel.create({
-      name,
-      email,
-      password: hashPwd,
-    });
+    if (req.file) {
+      const profilePicUrl = req.file.path; 
+
+      await userModel.create({
+        name,
+        email,
+        password: hashPwd,
+        profilePic: profilePicUrl, // Save the URL here
+      });
+    } else {
+      await userModel.create({
+        name,
+        email,
+        password: hashPwd,
+      });
+    }
 
     res.status(201).json({ success: `New user ${name} created!` });
   } catch (error) {
@@ -72,4 +98,4 @@ const handelNewUser = async (req, res) => {
   }
 };
 
-module.exports = { handelNewUser };
+module.exports = { handelNewUser, upload };

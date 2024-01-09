@@ -44,7 +44,8 @@ const isValidEmail = async (req, res) => {
 };
 
 const getMe = async (req, res) => {
-  const accessToken = req.cookies.jwt;
+  const accessToken = req.headers.authorization.split(" ")[1];
+
   if (!accessToken) {
     return res.status(401).json({ message: "Access token is required" });
   }
@@ -57,8 +58,10 @@ const getMe = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    console.log(user.profilePic);
     res.json(user);
   } catch (error) {
+    console.log(error);
     return res.status(403).json({ message: "Invalid or expired access token" });
   }
 };
